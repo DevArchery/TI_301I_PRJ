@@ -1,0 +1,14 @@
+# Ignorer tous les fichiers objets compilés
+*.o
+
+# Ignorer le dossier build/
+build/
+
+# Ignorer tous les fichiers temporaires
+*.tmp
+
+# Ignorer les fichiers de sauvegarde d’éditeurs
+*~
+
+# Ignorer CMakeLists.txt
+CMakeLists.txt
