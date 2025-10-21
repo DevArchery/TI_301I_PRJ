@@ -58,7 +58,8 @@ t_cell* createCell(int arrival_vertex, int prob) {
 t_list* createEmptyList() {
     t_list * NewList;
     t_cell * head = NULL;
-    return NewList}
+    return NewList;
+}
 
 t_list* addCellList(t_list* list, t_cell* cell) {
     if (list->head == NULL) {
@@ -76,3 +77,15 @@ t_list* addCellList(t_list* list, t_cell* cell) {
 }
 
 
+void displayList(t_list* list) {
+    t_cell* cur = list->head;
+    while (cur != NULL) {
+        printf("Arrival Vertex: %d, Probability: %d\n", cur->arrival_vertex, cur->probability);
+        cur = cur->next;
+    }
+}
+
+
+
+t_list* CreateAdjencyList() {
+}
