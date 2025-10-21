@@ -1,7 +1,7 @@
 #include <stdio.h>
-
+#include "data.h"
 
 int main() {
-    printf("Hello, World!\n");
+    read_data("../data/exemple1.txt");
     return 0;
 }
