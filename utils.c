@@ -79,13 +79,34 @@ t_list* addCellList(t_list* list, t_cell* cell) {
 
 void displayList(t_list* list) {
     t_cell* cur = list->head;
+    printf("[head @]");
     while (cur != NULL) {
-        printf("Arrival Vertex: %d, Probability: %d\n", cur->arrival_vertex, cur->probability);
+        printf(" @-> (%d, %d)", cur->arrival_vertex, cur->probability);
         cur = cur->next;
     }
+    printf("\n");
 }
 
 
 
-t_list* CreateAdjencyList() {
+t_list** CreateEmptyAdjencyList(int size){
+    /*IN :
+     OUT :
+     Usage :
+     */
+    t_list **AdjArray; //we need to use double pointers therefor the first pointer points to the array, which inside has pointers to the list
+    AdjArray = (t_list**)malloc(size * sizeof(t_list *));
+    for (int i = 0; i < size; i++) {
+        AdjArray[i] = createEmptyList();
+    }
+    return AdjArray; //return the double pointer to the function
+}
+
+
+void displayAdjList(t_list** AdjArray,int size) {
+    t_list* cur = AdjArray[0];
+    for (int i = 0; i < size; i++) {
+        printf("List for vertex %d : ",i);
+        displayList(AdjArray[i]);
+    }
 }
