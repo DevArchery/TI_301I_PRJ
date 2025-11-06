@@ -27,3 +27,18 @@ static char *getID(int i)
 
     return buffer;
 }
+//Structures implementation
+typedef struct s_cell {
+    int arrival_vertex;
+    int probability;
+    struct s_cell *next;
+}t_cell;
+
+typedef struct s_list {
+    t_cell *head;
+}t_list;
+
+typedef struct s_adjList {
+    t_list *list;
+    int size;
+}t_adjList;
