@@ -3,6 +3,7 @@
 
 # Ignorer le dossier build/
 build/
+cmake-build-debug
 
 # Ignorer tous les fichiers temporaires
 *.tmp
