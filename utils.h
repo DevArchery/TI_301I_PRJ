@@ -43,7 +43,7 @@ void displayList(t_list*);
 
 
 
-t_list** createEmptyAdjencyList(int);
+t_list** createEmptyAdjacencyList(int);
 void displayAdjList(t_list**, int);
 
 

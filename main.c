@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "data.h"
 #include "utils.h"
+#include <stdlib.h>
+#include <string.h>
+#include "f_tests.c"
 
 int main() {
     read_data("../data/exemple1.txt");

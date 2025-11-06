@@ -103,13 +103,17 @@ void displayList(t_list* list) {
 
 
 
-t_list** createEmptyAdjencyList(int size) {
+t_list** createEmptyAdjacencyList(int size) {
     /*
     IN : An integer to specify the size of the adjacency list
     OUT : A pointer to the created adjacency list
     Usage : Creates an empty adjacency list with the given size and returns a pointer to it
      */
-    t_list **AdjArray; //we need to use double pointers therefor the first pointer points to the array, which inside has pointers to the list
+    while (size <= 0) {
+        printf("Error: Size must be a positive integer.\nPleases enter a valid size : ");
+        scanf("%d", &size);
+    }
+    t_list **AdjArray; //we need to use double pointers therefore the first pointer points to the array, which inside has pointers to the list
     AdjArray = (t_list**)malloc(size * sizeof(t_list *));
     for (int i = 0; i < size; i++) {
         AdjArray[i] = createEmptyList();
