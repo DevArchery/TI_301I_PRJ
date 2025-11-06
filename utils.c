@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "utils.h"
+
 
 static char *getID(int i)
 {
@@ -27,41 +27,49 @@ static char *getID(int i)
 
     return buffer;
 }
-//Structures implementation
-typedef struct s_cell {
-    int arrival_vertex;
-    int probability;
-    struct s_cell *next;
-}t_cell;
 
-typedef struct s_list {
-    t_cell *head;
-}t_list;
 
-typedef struct s_adjList {
-    t_list *list;
-    int size;
-}t_adjList;
+
 
 
 //Functions
 
 
 t_cell* createCell(int arrival_vertex, int prob) {
+    /*
+    IN : An integer arrival_vertex and an integer probability
+    OUT : A pointer to the created cell
+    Usage : Creates a cell with the given arrival_vertex and probability and returns a pointer to it;
+    */
     t_cell * NewCell;
+    NewCell = (t_cell*)malloc(sizeof(t_cell));
     NewCell->arrival_vertex = arrival_vertex;
-    t_cell * next = NULL;
-    int next_prob = prob;
+    NewCell->next = NULL;
+    NewCell->probability = prob;
     return NewCell;
 }
 
+
+
 t_list* createEmptyList() {
-    t_list * NewList;
-    t_cell * head = NULL;
+    /*
+    IN : No input parameters
+    OUT : A pointer to the created empty list
+    Usage : Creates an empty list and returns a pointer to it
+    */
+    t_list * NewList = malloc(sizeof(t_list));
+    NewList->head = NULL;
     return NewList;
 }
 
+
+
 t_list* addCellList(t_list* list, t_cell* cell) {
+    /*
+    IN : A pointer to the list and a pointer to the cell to add
+    OUT : A pointer to the updated list
+    Usage : Adds a cell to the end of the list
+    */
     if (list->head == NULL) {
         list->head = cell;
     }
@@ -77,7 +85,13 @@ t_list* addCellList(t_list* list, t_cell* cell) {
 }
 
 
+
 void displayList(t_list* list) {
+    /*
+    IN : A pointer to the list to display
+    OUT : No output parameters
+    Usage : Displays the contents of the list
+    */
     t_cell* cur = list->head;
     printf("[head @]");
     while (cur != NULL) {
@@ -89,10 +103,11 @@ void displayList(t_list* list) {
 
 
 
-t_list** CreateEmptyAdjencyList(int size){
-    /*IN :
-     OUT :
-     Usage :
+t_list** createEmptyAdjencyList(int size) {
+    /*
+    IN : An integer to specify the size of the adjacency list
+    OUT : A pointer to the created adjacency list
+    Usage : Creates an empty adjacency list with the given size and returns a pointer to it
      */
     t_list **AdjArray; //we need to use double pointers therefor the first pointer points to the array, which inside has pointers to the list
     AdjArray = (t_list**)malloc(size * sizeof(t_list *));
@@ -103,8 +118,13 @@ t_list** CreateEmptyAdjencyList(int size){
 }
 
 
+
 void displayAdjList(t_list** AdjArray,int size) {
-    t_list* cur = AdjArray[0];
+    /*
+    IN : A pointer to the adjacency list and an integer specifying its size
+    OUT : No output parameters
+    Usage : Displays the contents of the adjacency list
+    */
     for (int i = 0; i < size; i++) {
         printf("List for vertex %d : ",i);
         displayList(AdjArray[i]);

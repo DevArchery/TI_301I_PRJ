@@ -63,13 +63,6 @@ build CMakeFiles/TI_301_PJT.dir/utils.c.obj: C_COMPILER__TI_301_PJT_unscanned_De
   OBJECT_DIR = CMakeFiles\TI_301_PJT.dir
   OBJECT_FILE_DIR = CMakeFiles\TI_301_PJT.dir
 
-build CMakeFiles/TI_301_PJT.dir/data.c.obj: C_COMPILER__TI_301_PJT_unscanned_Debug C$:/Users/rudol/CLionProjects/TI_301I_PRJ/data.c || cmake_object_order_depends_target_TI_301_PJT
-  CONFIG = Debug
-  DEP_FILE = CMakeFiles\TI_301_PJT.dir\data.c.obj.d
-  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\TI_301_PJT.dir
-  OBJECT_FILE_DIR = CMakeFiles\TI_301_PJT.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target TI_301_PJT
@@ -78,7 +71,7 @@ build CMakeFiles/TI_301_PJT.dir/data.c.obj: C_COMPILER__TI_301_PJT_unscanned_Deb
 #############################################
 # Link the executable TI_301_PJT.exe
 
-build TI_301_PJT.exe: C_EXECUTABLE_LINKER__TI_301_PJT_Debug CMakeFiles/TI_301_PJT.dir/main.c.obj CMakeFiles/TI_301_PJT.dir/utils.c.obj CMakeFiles/TI_301_PJT.dir/data.c.obj
+build TI_301_PJT.exe: C_EXECUTABLE_LINKER__TI_301_PJT_Debug CMakeFiles/TI_301_PJT.dir/main.c.obj CMakeFiles/TI_301_PJT.dir/utils.c.obj
   CONFIG = Debug
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
