@@ -1,21 +1,13 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
+#include <string.h>
 // Function prototypes from utils.c
 char *getID(int);
 
 
 typedef struct t_cell {
     int arrival_vertex;
-    int probability;
+    float probability;
     struct t_cell *next;
 } t_cell;
 /***
@@ -25,7 +17,7 @@ typedef struct t_cell {
  * @return : pointer to the created cell
  */
 
-t_cell* createCell(int, int);
+t_cell* createCell(int, float);
 
 
 
@@ -37,6 +29,11 @@ typedef struct t_list {
  * @return : pointer to the created empty list
  */
 
+typedef struct s_adjList {
+    t_list**array;
+    int size;
+}t_adjList;
+
 t_list* createEmptyList(void);
 t_list* addCellList(t_list*, t_cell*);
 void displayList(t_list*);
@@ -44,11 +41,9 @@ void displayList(t_list*);
 
 
 t_list** createEmptyAdjacencyList(int);
-void displayAdjList(t_list**, int);
+void displayAdjList(t_adjList*);
+void checkMarkovValidity(t_adjList*);
 
-
-#ifdef __cplusplus
-}
-#endif
+void mermaidOutput(t_adjList*);
 
 #endif

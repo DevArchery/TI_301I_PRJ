@@ -4,8 +4,8 @@ project(2526_TI301_PJT C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(TI_301_PJT
-        main.c utils.c utils.h f_test.c
-        f_test.h.cpp
-        f_test.h.cpp
+        main.c
+        utils.c
+        data.c
 )
 

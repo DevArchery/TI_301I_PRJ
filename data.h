@@ -1,7 +1,7 @@
 #ifndef PROJECT_DATA_H
 #define PROJECT_DATA_H
-#include <stdio.h>
+#include "utils.h"
 
-char* read_data(char *filename);
+t_adjList* readGraph(char *filename);
 
 #endif //PROJECT_DATA_H
