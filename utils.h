@@ -1,5 +1,49 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
+#include <string.h>
+// Function prototypes from utils.c
+char *getID(int);
 
+
+typedef struct t_cell {
+    int arrival_vertex;
+    float probability;
+    struct t_cell *next;
+} t_cell;
+/***
+ * @brief create a cell
+ * @param arrival_vertex : vertex where the cell arrives
+ * @param prob : probability of the cell
+ * @return : pointer to the created cell
+ */
+
+t_cell* createCell(int, float);
+
+
+
+typedef struct t_list {
+    t_cell *head;
+} t_list;
+/***
+ * @brief create an empty list
+ * @return : pointer to the created empty list
+ */
+
+typedef struct s_adjList {
+    t_list**array;
+    int size;
+}t_adjList;
+
+t_list* createEmptyList(void);
+t_list* addCellList(t_list*, t_cell*);
+void displayList(t_list*);
+
+
+
+t_list** createEmptyAdjacencyList(int);
+void displayAdjList(t_adjList*);
+void checkMarkovValidity(t_adjList*);
+
+void mermaidOutput(t_adjList*);
 
 #endif
