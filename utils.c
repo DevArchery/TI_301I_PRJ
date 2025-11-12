@@ -262,3 +262,10 @@ void mermaidOutput(t_adjList* adjList) {
     // Print a confirmation message to the console
     printf("Mermaid output successfully written to '%s'\n", "../output.txt");
 }
+
+
+
+
+
+
+

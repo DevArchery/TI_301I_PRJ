@@ -46,4 +46,23 @@ void checkMarkovValidity(t_adjList*);
 
 void mermaidOutput(t_adjList*);
 
+typedef struct t_TarjanCell {
+    int node_index;
+    struct t_TarjanCell* next;
+} t_TarjanCell;
+
+typedef struct t_tarjanVertex {
+    int identifier;
+    int nbr_classes;
+    int accessible_number;
+    int state;
+} t_tarjanVertex;
+
+t_tarjanVertex* createTarjanVertex(int node_id);
+
+typedef struct t_class {
+    char name;
+
+};
+
 #endif
