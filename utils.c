@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
 #include "utils.h"
 
-static char *getID(int i)
+
+char *getID(int i)
 {
     // translate from 1,2,3, .. ,500+ to A,B,C,..,Z,AA,AB,...
     static char buffer[10];
@@ -28,48 +27,238 @@ static char *getID(int i)
     return buffer;
 }
 
-// Function that checks if a given graph is a Markov graph
-void isMarkovGraph(const char *filename)
-{
-    FILE *file = fopen(filename, "r");
-    if (file == NULL)
+
+
+
+
+//Functions
+t_cell* createCell(int arrival_vertex, float prob) {
+    /*
+    IN : An integer arrival_vertex and an integer probability
+    OUT : A pointer to the created cell
+    Usage : Creates a cell with the given arrival_vertex and probability and returns a pointer to it;
+    */
+    t_cell * NewCell;
+    NewCell = (t_cell*)malloc(sizeof(t_cell));
+    NewCell->arrival_vertex = arrival_vertex;
+    NewCell->next = NULL;
+    NewCell->probability = prob;
+    return NewCell;
+}
+
+
+
+t_list* createEmptyList() {
+    /*
+    IN : No input parameters
+    OUT : A pointer to the created empty list
+    Usage : Creates an empty list and returns a pointer to it
+    */
+    t_list * NewList = malloc(sizeof(t_list));
+    NewList->head = NULL;
+    return NewList;
+}
+
+
+
+t_list* addCellList(t_list* list, t_cell* cell) {
+    /*
+    IN : A pointer to the list and a pointer to the cell to add
+    OUT : A pointer to the updated list
+    Usage : Adds a cell to the end of the list
+    */
+    if (list->head == NULL) {
+        list->head = cell;
+    }
+    else
     {
-        perror("Error opening file");
+        t_cell* current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = cell;
+    }
+    return list;
+}
+
+
+
+void displayList(t_list* list) {
+    /*
+    IN : A pointer to the list to display
+    OUT : No output parameters
+    Usage : Displays the contents of the list
+    */
+    t_cell* cur = list->head;
+    printf("[head @]");
+    while (cur != NULL) {
+        printf(" @-> (%d, %d)", cur->arrival_vertex, cur->probability);
+        cur = cur->next;
+    }
+    printf("\n");
+}
+
+
+
+t_list** createEmptyAdjacencyList(int size) {
+    /*
+    IN : An integer to specify the size of the adjacency list
+    OUT : A pointer to the created adjacency list
+    Usage : Creates an empty adjacency list with the given size and returns a pointer to it
+     */
+    while (size <= 0) {
+        printf("Error: Size must be a positive integer.\nPleases enter a valid size : ");
+        scanf("%d", &size);
+    }
+    t_list **adjList; //we need to use double pointers therefore the first pointer points to the array, which inside has pointers to the list
+    adjList = (t_list**)malloc(size * sizeof(t_list *));
+    for (int i = 0; i < size; i++) {
+        adjList[i] = createEmptyList();
+    }
+    return adjList; //return the double pointer to the function
+}
+
+
+
+void displayAdjList(t_adjList* adjList) {
+    /*
+    IN: Pointer to adjacency list
+    OUT: void
+    Usage: display the adjacency list if it is not NULL
+     */
+    if (adjList == NULL) {
+        printf("Error: Adjacency list is NULL\n");
         return;
     }
 
-    int nbvert, start, end, i;
-    float proba;
-    int is_valid = 1; // Assumes that the graph is a Markov graph
-    float sum[100] = {0.0};
+    int size = adjList->size;
+    for (int i = 0; i < size; i++) {
+        printf("List for vertex %d: [head @]", i + 1);
 
-    // Reads the first line which indicates the number of vertices
-    if (fscanf(file, "%d", &nbvert) != 1)
-    {
-        printf("Error reading file");
-        fclose(file);
+        t_list *lst = adjList->array[i];
+
+        if (lst == NULL || lst->head == NULL) {
+            printf("\n"); // If empty, print a newline
+            continue;
+        }
+
+        t_cell *cur = lst->head;
+        const char* separator = " -> ";
+
+        while (cur != NULL) {
+            printf("%s(%d, %.2f)", separator, cur->arrival_vertex, cur->probability);
+            separator = " @-> ";
+            cur = cur->next;
+        }
+        printf("\n");
+    }
+}
+void checkMarkovValidity(t_adjList* adjList) {
+    /*
+    IN:Pointer to adjacency list
+    OUT: void
+    Usage: Display if the entered graph is a Markov Chain
+     */
+
+
+    //Check for NULL ptr
+    if (adjList == NULL) {
+        printf("Error: Cannot check validity of a NULL adjacency list.\n");
         return;
     }
 
-    // Reads each line of the file and verifies the structure (start/end/probability)
-    while (fscanf(file, "%d %d %f", &start, &end, &proba) == 3)
-    {
-        // Checks that the start is valid and add the proba to the sum
-        if (start >= 1 && start <= nbvert) sum[start - 1] += proba;
+    printf("\n--- Checking Markov Chain Validity ---\n");
+    int is_overall_valid = 1; // Flag to track the validity of the graph
+
+    // Iterate for every vertex
+    for (int i = 0; i < adjList->size; i++) {
+        float probability_sum = 0.0f;
+        t_list* current_list = adjList->array[i];
+
+        // 3. Traverse the linked list for the current vertex
+        if (current_list != NULL && current_list->head != NULL) {
+            t_cell* current_cell = current_list->head;
+            while (current_cell != NULL) {
+                probability_sum += current_cell->probability;
+                current_cell = current_cell->next;
+            }
+        }
+        //handling of float inaccuracies
+        if (probability_sum >= 0.99f && probability_sum < 1.01f) {
+            printf("Vertex %d: OK (sum = %.4f)\n", i + 1, probability_sum);
+        } else {
+            printf("Vertex %d: INVALID (sum = %.4f, should be ~1.0)\n", i + 1, probability_sum);
+            is_overall_valid = 0; // If any vertex is invalid, the whole graph is.
+        }
+    }
+    if (is_overall_valid) {
+        printf("The graph is a Markov chain.\n");
+    } else {
+        printf("The graph is NOT a Markov chain.\n");
+    }
+}
+
+void mermaidOutput(t_adjList* adjList) {
+    /*
+    IN: Pointer to adjacency list
+    OUT: text file output.txt in the same directory
+    usage: Convert an adjacency list to a text format that can be used to draw charts on mermaid
+     */
+
+
+    // Check for NULL
+    if (adjList == NULL || adjList->array == NULL) {
+        fprintf(stderr, "Error: Cannot generate Mermaid output from a NULL or invalid graph.\n");
+        return;
     }
 
-    // Verifies that all the probabilities of each vertex is equal to 1
-    for (i = 0; i < nbvert; i++)
-    {
-        // If the sum is approximately equal to 1
-        if (sum[i] < 0.99 || sum[i] > 1.0)
-        {
-            printf("The graph is not a Markov graph.\n");
-            printf("The sum of the probabilities of vertex %d is %.2f\n", i+1, sum[i]);
-            is_valid = 0;
+    //Opening output;txt in writing mode
+    FILE* file = fopen("../output.txt", "w");
+    if (file == NULL) {
+        perror("Error: Could not open file for writing Mermaid output");
+        return;
+    }
+
+    // Configuration header of the file
+    fprintf(file, "---\n");
+    fprintf(file, "config:\n");
+    fprintf(file, "    layout: elk\n");
+    fprintf(file, "    theme: neo\n");
+    fprintf(file, "    look: neo\n");
+    fprintf(file, "---\n\n");
+
+    fprintf(file, "flowchart LR\n");
+
+    // Node declaration
+    for (int i = 0; i < adjList->size; i++) {
+        int vertex_num = i + 1;
+        fprintf(file, "    %s((%d))\n", getID(vertex_num), vertex_num);
+    }
+    fprintf(file, "\n"); // Add a blank line for readability
+
+    // Writing edges
+    for (int i = 0; i < adjList->size; i++) {
+        t_list* current_list = adjList->array[i];
+        if (current_list != NULL && current_list->head != NULL) {
+            char source_label[10];
+            strcpy(source_label, getID(i + 1));
+
+            t_cell* current_cell = current_list->head;
+            while (current_cell != NULL) {
+                const char* dest_label = getID(current_cell->arrival_vertex);
+                fprintf(file, "    %s -->|%.2f|%s\n",
+                       source_label,
+                       current_cell->probability,
+                       dest_label);
+
+                current_cell = current_cell->next;
+            }
         }
     }
 
-    if (is_valid) printf("The graph is a Markov graph.\n");
+    // closing
     fclose(file);
+
+    // Print a confirmation message to the console
+    printf("Mermaid output successfully written to '%s'\n", "../output.txt");
 }
