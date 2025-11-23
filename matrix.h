@@ -65,6 +65,15 @@ float matrixDiff(matrix A, matrix B);
  * @return : the difference between the two matrices
  */
 
+matrix subMatrix (matrix M, t_partition part, int comp_index);
+/***
+* @brief Extracts a submatrix corresponding to a specific component of a graph partition.
+* @param matrix The original adjacency matrix of the graph.
+* @param part The partition of the graph into strongly connected components.
+* @param compo_index The index of the component to extract.
+* @return t_matrix The submatrix corresponding to the specified component.
+*/
+
 
 
 #endif //INC_2526_TI301_PJT_MATRIX_H
