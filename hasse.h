@@ -31,6 +31,9 @@ void printLinkArray(const t_link_array *arr);
 void freeLinkArray(t_link_array *arr);
 void writeHasseMermaid(t_partition *part, t_adjList *graph, const char *out_path);
 
+int is_class_transitory(const t_link_array *links, int class_idx);
+int is_class_persistent(const t_link_array *links, int class_idx);
+int is_state_absorbing(t_partition *part, const t_link_array *links, int state_id);
 
 
 #endif

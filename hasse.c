@@ -236,3 +236,64 @@ void writeHasseMermaid(t_partition *part, t_adjList *graph, const char *out_path
     free(class_ptrs);
     freeLinkArray(&links);
 }
+
+/* Return 1 if class `class_idx` has at least one outgoing link in `links`. */
+int isTransitory(const t_link_array *links, int class_idx)
+{
+    if (!links || class_idx <= 0) return 0;
+    for (int i = 0; i < links->count; ++i) {
+        if (links->links[i].start_class == class_idx) return 1;
+    }
+    return 0;
+}
+
+/* Return 1 if class `class_idx` is persistent (no outgoing links). */
+int isPersistent(const t_link_array *links, int class_idx)
+{
+    return !isTransitory(links, class_idx);
+}
+
+/* Internal helper: find class index (1..m) containing vertex `vertex_id`, 0 if none. */
+static int get_class_index_of_vertex(t_partition *part, int vertex_id)
+{
+    if (!part || vertex_id <= 0) return 0;
+    int idx = 1;
+    t_partitionNode *pnode = part->head;
+    while (pnode) {
+        t_class *c = pnode->class;
+        if (c) {
+            t_classNode *cn = c->head;
+            while (cn) {
+                if (cn->vertex && cn->vertex->identifier == vertex_id) return idx;
+                cn = cn->next;
+            }
+        }
+        idx++;
+        pnode = pnode->next;
+    }
+    return 0;
+}
+
+/* Return 1 if `state_id` is absorbing: its class is persistent and contains exactly one state. */
+int isAbsorbing(t_partition *part, const t_link_array *links, int state_id)
+{
+    if (!part || state_id <= 0) return 0;
+    int cidx = get_class_index_of_vertex(part, state_id);
+    if (cidx == 0) return 0;
+
+    if (isTransitory(links, cidx)) return 0; /* not persistent */
+
+    /* locate the class pointer and check size == 1 */
+    int idx = 1;
+    t_partitionNode *pnode = part->head;
+    while (pnode) {
+        if (idx == cidx) {
+            t_class *c = pnode->class;
+            if (c && c->size == 1) return 1;
+            return 0;
+        }
+        idx++;
+        pnode = pnode->next;
+    }
+    return 0;
+}
