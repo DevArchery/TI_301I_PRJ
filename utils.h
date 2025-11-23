@@ -92,7 +92,7 @@ typedef struct t_tarjanNode {
  */
 
 typedef struct t_class {
-    char name[16];
+    char name;
     t_classNode* head;
     int size;
 } t_class;
@@ -158,7 +158,5 @@ typedef struct t_partition {
 
 t_partition* createPartition();
 void addClassToPartition(t_partition*, t_class*);
-void parcours(t_tarjanVertex* v, t_adjList* graph, t_tarjanVertex** vertices, t_stack* s, int* idx, t_partition* part);
-void displayPartition(t_partition* p);
 
 #endif
