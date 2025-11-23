@@ -7,5 +7,9 @@ int main() {
     displayAdjList(graph);
     checkMarkovValidity(graph);
     mermaidOutput(graph);
-    TarjanAlgorithm(graph);
+    t_partition* part = TarjanAlgorithm(graph);
+    if (part != NULL) {
+        displayPartition(part);
+    }
+    return 0;
 }

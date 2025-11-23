@@ -83,8 +83,44 @@ t_adjList* readGraph(char *filename) {
     return adjList;
 }
 
-void TarjanAlgorithm(t_adjList* adjList) {
-    if (adjList == NULL) return;
+void displayPartition(t_partition *p_partition)
+{
+    if (p_partition == NULL) {
+        printf("Partition is NULL\n");
+        return;
+    }
+
+    t_partitionNode *pnode = p_partition->head;
+    while (pnode != NULL) {
+        t_class *c = pnode->class;
+        if (c == NULL || c->head == NULL) {
+            printf("{}\n");
+            pnode = pnode->next;
+            continue;
+        }
+
+        printf("{");
+        t_classNode *cn = c->head;
+        while (cn != NULL) {
+            if (cn->vertex != NULL) {
+                printf("%d", cn->vertex->identifier);
+            } else {
+                printf("?");
+            }
+            if (cn->next != NULL) {
+                printf(",");
+            }
+            cn = cn->next;
+        }
+        printf("}\n");
+
+        pnode = pnode->next;
+    }
+}
+
+
+t_partition* TarjanAlgorithm(t_adjList* adjList) {
+    if (adjList == NULL) return NULL;
 
     int n = adjList->size;
     t_tarjanVertex** vertices = tarjanStateArray(adjList);
@@ -98,8 +134,5 @@ void TarjanAlgorithm(t_adjList* adjList) {
         }
     }
 
-    displayPartition(p);
-
-    // Free allocated memory
-    // ... (code to free vertices, stack, partition, etc.)
+    return p;
 }

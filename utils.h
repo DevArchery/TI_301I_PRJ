@@ -92,7 +92,7 @@ typedef struct t_tarjanNode {
  */
 
 typedef struct t_class {
-    char name;
+    char name[10];
     t_classNode* head;
     int size;
 } t_class;

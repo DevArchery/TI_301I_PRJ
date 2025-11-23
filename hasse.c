@@ -1,4 +1,5 @@
 #include <malloc.h>
+#include <stdio.h>
 
 #include "hasse.h"
 
