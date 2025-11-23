@@ -262,3 +262,188 @@ void mermaidOutput(t_adjList* adjList) {
     // Print a confirmation message to the console
     printf("Mermaid output successfully written to '%s'\n", "../output.txt");
 }
+
+// Step 2 - Utility elements (2.1)
+t_tarjanVertex ** tarjanStateArray(t_adjList* adjList)
+{
+    /*
+    IN: Pointer to adjacency list
+    OUT: Pointer to array of Tarjan vertices
+    Usage: Initializes an array of Tarjan vertices with default values
+     */
+
+    int n = adjList->size;
+    t_tarjanVertex ** t_tarjan_array = malloc(n*sizeof(t_tarjanVertex*));
+
+    for (int i=0; i<n; i++)
+    {
+        t_tarjan_array[i] = malloc(sizeof(t_tarjanVertex));
+        t_tarjan_array[i]->identifier = i+1;
+        t_tarjan_array[i]->nbr_classes = -1;
+        t_tarjan_array[i]->accessible_number = -1;
+        t_tarjan_array[i]->state = 0;
+    }
+    return t_tarjan_array;
+}
+
+// CLASS
+t_class* createClass(const char* name)
+{
+    /*
+    IN: String representing the name of the class
+    OUT: Pointer to the created class
+    Usage: Creates an empty class with the given name, no vertices and size set to 0
+     */
+
+    t_class* c = malloc(sizeof(t_class));
+    strcpy(c->name, name);
+    c->head = NULL;
+    c->size = 0;
+    return c;
+}
+
+void addVertexToClass(t_class* c, t_tarjanVertex* v)
+{
+    /*
+    IN: Pointer to a class and another to a Tarjan vertex
+    OUT: None
+    Usage: Adds the given vertex to the class by inserting it at the head of the list
+     */
+
+    t_classNode* newNode = malloc(sizeof(t_classNode));
+    newNode->vertex = v;
+    newNode->next = c->head;
+    c->head = newNode;
+    c->size++;
+}
+
+// STACK
+t_stack* createStack(int size)
+{
+    /*
+    IN: Integer specifying the max size of the stack
+    OUT: Pointer to the created stack
+    Usage: Creates an empty stack with a given size
+     */
+
+    t_stack* stack = malloc(sizeof(t_stack));
+    stack->vertex = malloc((size)*sizeof(int));
+    stack->top = -1;
+    stack->size = size;
+    return stack;
+}
+
+void push(t_stack* stack, t_tarjanVertex* v)
+{
+    /*
+    IN: Pointer to a stack and another to a Tarjan vertex
+    OUT: None
+    Usage: Pushes the given vertex onto the stack (if there is available capacity)
+     */
+
+    if (stack->top < stack->size - 1) {
+        stack->top = stack->top+1;
+        stack->vertex[stack->top] = v;
+    }
+}
+
+t_tarjanVertex* pop(t_stack* stack) {
+    /*
+    IN: Pointer to a stack
+    OUT: Pointer to the popped Tarjan vertex or NULL if stack empty
+    Usage: Removes and returns the top element of the stack
+     */
+
+    if (stack->top >= 0) {
+        return stack->vertex[stack->top--];
+    }
+    return NULL;
+}
+
+int isEmptyStack(t_stack* stack) {
+    /*
+    IN: Pointer to a stack
+    OUT: Integer (1 if empty, 0 otherwise)
+    Usage: Checks if stack empty
+     */
+
+    return stack->top == -1;
+}
+
+// PARTITION
+t_partition* createPartition()
+{
+    /*
+    IN: None
+    OUT: Pointer to the created partition
+    Usage: Creates an empty partition with no classes
+     */
+
+    t_partition* p = malloc(sizeof(t_partition));
+    p->head = NULL;
+    p->size = 0;
+    return p;
+}
+
+void addClassToPartition(t_partition* p, t_class* c)
+{
+    /*
+    IN: Pointer to a partition and another to a class
+    OUT: None
+    Usage: Adds the given class to the partition by inserting it at the end of the list
+     */
+
+    t_partitionNode* newNode = malloc(sizeof(t_classNode));
+    newNode->class = c;
+    newNode->next = p->head;
+    p->head = newNode;
+    p->size++;
+}
+
+
+// Step 3 - Breaking down into functions (3.1)
+void parcours(t_tarjanVertex* v, t_adjList* graph, t_tarjanVertex** vertices, t_stack* s, int* idx, t_partition* part)
+{
+    /*
+    IN: Vertex, adjacency list, array of vertices, stack, pointer to idx counter, partition
+    OUT: None
+    Usage: Performs Tarjan's DFS traversal from the given vertex, updates indices
+    and builds strongly connected components into partition
+     */
+
+    v->nbr_classes = *idx;
+    v->accessible_number = *idx;
+    *idx += 1;
+    push(s, v);
+    v->state = 1;
+
+    t_list* successors = graph->array[v->identifier-1];
+    t_cell* cur = successors->head;
+
+    while (cur != NULL) {
+        t_tarjanVertex* w = vertices[cur->arrival_vertex-1];
+
+        if (w->nbr_classes == -1) {
+            parcours(w, graph, vertices, s, idx, part);
+            v->accessible_number = (v->accessible_number < w->accessible_number) ? v->accessible_number : w->accessible_number;
+        } else if (w->state) {
+            v->accessible_number = (v->accessible_number < w->nbr_classes) ? v->accessible_number : w->nbr_classes;
+        }
+        cur = cur->next;
+    }
+
+    if (v->accessible_number == v->nbr_classes) {
+        char cname[10];
+        sprintf(cname,"C%d", part->size+1);
+        t_class* newClass = createClass(cname);
+        t_tarjanVertex* w;
+
+        do {
+            w = pop(s);
+            w->state = 0;
+            addVertexToClass(newClass, w);
+        } while (w != v);
+
+        addClassToPartition(part, newClass);
+    }
+}
