@@ -1,15 +1,15 @@
 //
 // Created by steph on 23/11/2025.
 //
-
+/*
 int gcd(int *vals, int nbvals)
-{
+{*/
     /*
     IN: Pointer to an array of integers and number of values in the array
     OUT: The greatest common divisor of all values in the array
     Usage: Used in Markov graph analysis to determine the period of a class by finding the GDC of cycle lengths
      */
-
+/*
     if (nbvals == 0) return 0;          // If no values, return 0
     int result = vals[0];               // Initialize result with first value
     for (int i = 1; i < nbvals; i++) {  // Loop through all other values
@@ -26,13 +26,13 @@ int gcd(int *vals, int nbvals)
 }
 
 int getPeriod(t_matrix sub_matrix)
-{
+{*/
     /*
     IN: Submatrix representing the transitions of a strongly connected component (class)
     OUT: Period of the class (int), computed as the greatest common divisor of all cycle lengths
     Usage: Used in Markov graph analysis to determine if a class is periodic by checking when states return to themselves
      */
-
+/*
     int n = sub_matrix.rows;                                // Number of vertices in the submatrix
     int *periods = (int *)malloc(n * sizeof(int));     // Array to store detected cycle lengths
     int period_count = 0;                                   // Counter for number of cycles found
@@ -60,3 +60,4 @@ int getPeriod(t_matrix sub_matrix)
     }
     return gcd(periods, period_count);                      // Period = GCD of all detected cycle lengths
 }
+*/

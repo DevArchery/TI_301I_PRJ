@@ -1,0 +1,20 @@
+---
+config:
+    layout: elk
+    theme: neo
+    look: neo
+---
+
+flowchart LR
+
+    C6[10]
+    C5[9]
+    C4[4]
+    C3[3,8,6]
+    C2[2]
+    C1[1,7,5]
+
+    C5 --> C3
+    C5 --> C1
+    C6 --> C1
+    C6 --> C4
