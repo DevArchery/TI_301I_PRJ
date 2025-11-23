@@ -64,3 +64,13 @@ matrix multiplyMatrix (matrix A, matrix B) {
     return result;
 }
 
+float matrixDiff(matrix A, matrix B) {
+    float diff = 0;
+    for (int i=0; i<A.rows; i++) {
+        for (int j=0; j<A.columns; j++) {
+            diff += A.proba[i][j] - B.proba[i][j];
+        }
+    }
+    return diff;
+}
+
