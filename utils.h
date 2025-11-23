@@ -68,11 +68,11 @@ typedef struct t_tarjanVertex {
 } t_tarjanVertex;
 /***
  * @brief represents a vertex in Tarjan's algorithm
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+ * @param identifier : a unique identifier of the vertex
+ * @param nbr_classes : an integer representing the order in which the vertex was visited
+ * @param accessible_number : an integer representing the lowest reachable nbr_classes from this vertex
+ * @param state : an integer representing if the vertex is in the stack (1) or not (0)
+ * @return : structure used to store Tarjan vertex information
  */
 
 t_tarjanVertex* createTarjanVertex(int node_id);
@@ -83,12 +83,10 @@ typedef struct t_tarjanNode {
     struct t_tarjanNode* next;
 } t_classNode;
 /***
- * @brief
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+ * @brief  represents a node in a class
+ * @param  vertex : A pointer to a Tarjan vertex
+ * @param  next : A pointer to the next class node
+ * @return : A pointer to the created class node
  */
 
 typedef struct t_class {
@@ -97,17 +95,36 @@ typedef struct t_class {
     int size;
 } t_class;
 /***
- * @brief
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+ * @brief  : represents a class of strongly connected components
+ * @param  name : The name of the class
+ * @param  head : A pointer to the head of the class node list
+ * @param  size : The number of nodes in the class
+ * @return : A pointer to the created class
  */
 
 t_class* createClass(const char*);
+/***
+ * @brief  : creates a new class with the given name
+ * @param  name : The name of the class
+ * @param  head : A pointer to the head of the class node list
+ * @param  size : The number of nodes in the class
+ * @return : A pointer to the created class
+ */
+
 void addVertexToClass(t_class*, t_tarjanVertex*);
+/***
+ * @brief  : adds a Tarjan vertex to the given class
+ * @param  c : A pointer to the class
+ * @param  v : A pointer to the Tarjan vertex to add
+ * @return : void
+ */
+
 t_tarjanVertex ** tarjanStateArray();
+/***
+ * @brief  : creates an array of Tarjan vertices initialized with default values
+ * @param  adjList : A pointer to the adjacency list
+ * @return : A pointer to the created array of Tarjan vertices
+ */
 
 // STACK
 typedef struct t_stack {
@@ -116,31 +133,54 @@ typedef struct t_stack {
     int size;
 } t_stack;
 /***
- * @brief
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+ * @brief  : represents a stack used in Tarjan's algorithm
+ * @param  vertex : An array of pointers to Tarjan vertices
+ * @param  top : The index of the top element in the stack
+ * @param  size : The maximum size of the stack
+ * @return : A pointer to the created stack
  */
 
 t_stack* createStack(int);
+/***
+ * @brief  : creates a stack with the given size
+ * @param  size : The maximum size of the stack
+ * @return : A pointer to the created stack
+ */
+
+
 void push(t_stack*, t_tarjanVertex*);
+/***
+ * @brief  : pushes a Tarjan vertex onto the stack
+ * @param  stack : A pointer to the stack
+ * @param  vertex : A pointer to the Tarjan vertex to push
+ * @return : void
+ */
+
 t_tarjanVertex* pop(t_stack*);
+/***
+ * @brief  : pops a Tarjan vertex from the stack
+ * @param  stack : A pointer to the stack
+ * @return : A pointer to the popped Tarjan vertex or NULL if stack is empty
+ */
+
 int isEmptyStack(t_stack*);
+/***
+ * @brief  : checks if the stack is empty
+ * @param  stack : A pointer to the stack
+ * @return : 1 if the stack is empty, 0 otherwise
+ */
+
 
 // PARTITION
 typedef struct t_partitionNode {
     t_class* class;
     struct t_partitionNode* next;
 } t_partitionNode;
-/***
- * @brief
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+/**
+ * @brief  : represents a node in a partition
+ * @param  class : A pointer to a class
+ * @param  next : A pointer to the next partition node
+ * @return : A pointer to the created partition node
  */
 
 typedef struct t_partition {
@@ -148,15 +188,24 @@ typedef struct t_partition {
     int size;
 } t_partition;
 /***
- * @brief
- * @param identifier :
- * @param nbr_classes :
- * @param accessible_number :
- * @param state :
- * @return :
+ * @brief  : represents a partition of classes
+ * @param  head : A pointer to the head of the partition node list
+ * @param  size : The number of classes in the partition
+ * @return : A pointer to the created partition
  */
 
 t_partition* createPartition();
+/***
+ * @brief  : creates an empty partition
+ * @return : A pointer to the created partition
+ */
+
 void addClassToPartition(t_partition*, t_class*);
+/***
+ * @brief  : adds a class to the given partition
+ * @param  p : A pointer to the partition
+ * @param  c : A pointer to the class to add
+ * @return : void
+ */
 
 #endif

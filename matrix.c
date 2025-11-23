@@ -75,17 +75,17 @@ float matrixDiff(matrix A, matrix B) {
 }
 
 matrix subMatrix (matrix M, t_partition part, int compo_index) {
-    t_TarjanCell *tmp = part.t_list[compo_index].t_tarjanVertex;
+    t_classNode* tmp = part.head[compo_index].class->head;
     int count = 0;
     while (tmp != NULL) {
         count++;
         tmp = tmp->next;
     }
     int *vertices = malloc(count * sizeof(int));
-    tmp = part.t_list[compo_index].t_tarjanVertex;
+    tmp = part.head[compo_index].class->head;
     int indx = 0;
     while (tmp != NULL) {
-        vertices[indx++] = tmp->t_tarjanVertex->identifier;
+        vertices[indx++] = tmp->vertex->identifier;
         tmp = tmp->next;
     }
     matrix S = createZeroMatrix (count);
