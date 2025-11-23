@@ -8,5 +8,4 @@ add_executable(TI_301_PJT
         utils.c
         data.c
         bonus.c
-)
-
+        hasse.c)

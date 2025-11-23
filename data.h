@@ -3,5 +3,6 @@
 #include "utils.h"
 
 t_adjList* readGraph(char *filename);
+void TarjanAlgorithm(t_adjList* adjList);
 
 #endif //PROJECT_DATA_H
