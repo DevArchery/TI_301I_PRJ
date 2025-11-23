@@ -74,3 +74,31 @@ float matrixDiff(matrix A, matrix B) {
     return diff;
 }
 
+matrix subMatrix (matrix M, t_partition part, int compo_index) {
+    t_TarjanCell *tmp = part.t_list[compo_index].t_tarjanVertex;
+    int count = 0;
+    while (tmp != NULL) {
+        count++;
+        tmp = tmp->next;
+    }
+    int *vertices = malloc(count * sizeof(int));
+    tmp = part.t_list[compo_index].t_tarjanVertex;
+    int indx = 0;
+    while (tmp != NULL) {
+        vertices[indx++] = tmp->t_tarjanVertex->identifier;
+        tmp = tmp->next;
+    }
+    matrix S = createZeroMatrix (count);
+    for (int i=0; i<count; i++) {
+        for (int j=0; j<count; j++) {
+            S.proba[i][j] = M.proba[vertices[i]][vertices[j]];
+        }
+    }
+    free (vertices);
+    return S;
+
+
+
+}
+
+
