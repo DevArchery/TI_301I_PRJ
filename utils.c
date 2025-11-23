@@ -92,7 +92,7 @@ void displayList(t_list* list) {
     t_cell* cur = list->head;
     printf("[head @]");
     while (cur != NULL) {
-        printf(" @-> (%d, %d)", cur->arrival_vertex, cur->probability);
+        printf(" @-> (%d, %.2f)", cur->arrival_vertex, cur->probability);
         cur = cur->next;
     }
     printf("\n");
