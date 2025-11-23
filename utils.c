@@ -262,3 +262,97 @@ void mermaidOutput(t_adjList* adjList) {
     // Print a confirmation message to the console
     printf("Mermaid output successfully written to '%s'\n", "../output.txt");
 }
+t_class* createEmptyClass() {
+    t_class* cls = (t_class*)malloc(sizeof(t_class));
+    if (cls == NULL) return NULL;
+    cls->connected = (int*)malloc(sizeof(int));
+    if (cls->connected == NULL) { free(cls); return NULL; }
+    cls->size = 1;
+    cls->nbelts = 0;
+    return cls;
+}
+
+
+t_class* createClass(int node,t_class* cls,t_adjList *adjList) {
+    if (adjList == NULL) return NULL;
+    int n = adjList->size;
+    if (node < 1 || node > n) return NULL;
+
+    // Initialize cls if NULL
+    if (cls == NULL) {
+        cls = (t_class*)malloc(sizeof(t_class));
+        if (cls == NULL) return NULL;
+        cls->connected = NULL;
+        cls->size = 0;
+        cls->nbelts = 0;
+    }
+
+    // Prepare visited array and queue for BFS
+    char *visited = (char*)calloc(n, sizeof(char));
+    if (visited == NULL) return cls;
+
+    int *queue = (int*)malloc(n * sizeof(int));
+    if (queue == NULL) { free(visited); return cls; }
+
+    int head = 0, tail = 0;
+    queue[tail++] = node - 1;
+    visited[node - 1] = 1;
+
+    // Ensure capacity helper
+    int capacity = (cls->size > 0) ? cls->size : 4;
+    if (cls->connected == NULL) {
+        cls->connected = (int*)malloc(capacity * sizeof(int));
+        if (cls->connected == NULL) { free(queue); free(visited); return cls; }
+        cls->size = capacity;
+        cls->nbelts = 0;
+    }
+
+    while (head < tail) {
+        int u = queue[head++];
+        // add to class list
+        if (cls->nbelts >= cls->size) {
+            int newcap = cls->size * 2;
+            int *tmp = (int*)realloc(cls->connected, newcap * sizeof(int));
+            if (tmp == NULL) break;
+            cls->connected = tmp;
+            cls->size = newcap;
+        }
+        cls->connected[cls->nbelts++] = u + 1; // store 1-based vertex
+
+        // traverse neighbors
+        t_list *lst = adjList->array[u];
+        if (lst != NULL && lst->head != NULL) {
+            t_cell *cur = lst->head;
+            while (cur != NULL) {
+                int v = cur->arrival_vertex - 1;
+                if (v >= 0 && v < n && !visited[v]) {
+                    visited[v] = 1;
+                    queue[tail++] = v;
+                }
+                cur = cur->next;
+            }
+        }
+    }
+
+    free(queue);
+    free(visited);
+    return cls;
+}
+
+void displayClassConnected(t_class* cls) {
+    if (cls == NULL) {
+        printf("Error: class is NULL\n");
+        return;
+    }
+    if (cls->connected == NULL || cls->nbelts == 0) {
+        printf("Class is empty\n");
+        return;
+    }
+
+    printf("Class connected: [");
+    for (int i = 0; i < cls->nbelts; i++) {
+        if (i > 0) printf(", ");
+        printf("%d", cls->connected[i]);
+    }
+    printf("]\n");
+}

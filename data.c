@@ -82,3 +82,7 @@ t_adjList* readGraph(char *filename) {
     fclose(file);
     return adjList;
 }
+
+void TrajanAlgorithm(t_adjList* adjList) {
+
+}
