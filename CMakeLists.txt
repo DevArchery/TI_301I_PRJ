@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.24)
-project(2526_TI301_PJT C)
+cmake_minimum_required(VERSION 3.10)
+project(TI301I_PRJ C)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 
-add_executable(TI_301_PJT
+add_executable(TI301I_PRJ
         main.c
         utils.c
         data.c
-)
-
+        hasse.c)

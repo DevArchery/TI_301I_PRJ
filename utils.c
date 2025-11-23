@@ -262,97 +262,152 @@ void mermaidOutput(t_adjList* adjList) {
     // Print a confirmation message to the console
     printf("Mermaid output successfully written to '%s'\n", "../output.txt");
 }
-t_class* createEmptyClass() {
-    t_class* cls = (t_class*)malloc(sizeof(t_class));
-    if (cls == NULL) return NULL;
-    cls->connected = (int*)malloc(sizeof(int));
-    if (cls->connected == NULL) { free(cls); return NULL; }
-    cls->size = 1;
-    cls->nbelts = 0;
-    return cls;
-}
 
-
-t_class* createClass(int node,t_class* cls,t_adjList *adjList) {
-    if (adjList == NULL) return NULL;
+// Step 2 - Utility elements (2.1)
+t_tarjanVertex ** tarjanStateArray(t_adjList* adjList)
+{
     int n = adjList->size;
-    if (node < 1 || node > n) return NULL;
+    t_tarjanVertex ** t_tarjan_array = malloc(n * sizeof(t_tarjanVertex*));
 
-    // Initialize cls if NULL
-    if (cls == NULL) {
-        cls = (t_class*)malloc(sizeof(t_class));
-        if (cls == NULL) return NULL;
-        cls->connected = NULL;
-        cls->size = 0;
-        cls->nbelts = 0;
+    for (int i=0; i<n; i++)
+    {
+        t_tarjan_array[i] = malloc(sizeof(t_tarjanVertex));
+        t_tarjan_array[i]->identifier = i+1;
+        t_tarjan_array[i]->nbr_classes = -1;
+        t_tarjan_array[i]->accessible_number = -1;
+        t_tarjan_array[i]->state = 0;
     }
-
-    // Prepare visited array and queue for BFS
-    char *visited = (char*)calloc(n, sizeof(char));
-    if (visited == NULL) return cls;
-
-    int *queue = (int*)malloc(n * sizeof(int));
-    if (queue == NULL) { free(visited); return cls; }
-
-    int head = 0, tail = 0;
-    queue[tail++] = node - 1;
-    visited[node - 1] = 1;
-
-    // Ensure capacity helper
-    int capacity = (cls->size > 0) ? cls->size : 4;
-    if (cls->connected == NULL) {
-        cls->connected = (int*)malloc(capacity * sizeof(int));
-        if (cls->connected == NULL) { free(queue); free(visited); return cls; }
-        cls->size = capacity;
-        cls->nbelts = 0;
-    }
-
-    while (head < tail) {
-        int u = queue[head++];
-        // add to class list
-        if (cls->nbelts >= cls->size) {
-            int newcap = cls->size * 2;
-            int *tmp = (int*)realloc(cls->connected, newcap * sizeof(int));
-            if (tmp == NULL) break;
-            cls->connected = tmp;
-            cls->size = newcap;
-        }
-        cls->connected[cls->nbelts++] = u + 1; // store 1-based vertex
-
-        // traverse neighbors
-        t_list *lst = adjList->array[u];
-        if (lst != NULL && lst->head != NULL) {
-            t_cell *cur = lst->head;
-            while (cur != NULL) {
-                int v = cur->arrival_vertex - 1;
-                if (v >= 0 && v < n && !visited[v]) {
-                    visited[v] = 1;
-                    queue[tail++] = v;
-                }
-                cur = cur->next;
-            }
-        }
-    }
-
-    free(queue);
-    free(visited);
-    return cls;
+    return t_tarjan_array;
 }
 
-void displayClassConnected(t_class* cls) {
-    if (cls == NULL) {
-        printf("Error: class is NULL\n");
-        return;
+t_class* createClass(const char* name)
+{
+    t_class* c = malloc(sizeof(t_class));
+    strncpy(c->name, name, sizeof(c->name)-1);
+    c->name[sizeof(c->name)-1] = '\0';
+    c->head = NULL;
+    c->size = 0;
+    return c;
+}
+
+void addVertexToClass(t_class* c, t_tarjanVertex* v)
+{
+    t_classNode* newNode = malloc(sizeof(t_classNode));
+    newNode->vertex = v;
+    newNode->next = c->head;
+    c->head = newNode;
+    c->size++;
+}
+
+t_stack* createStack(int size)
+{
+    t_stack* stack = malloc(sizeof(t_stack));
+    stack->vertex = malloc((size) * sizeof(t_tarjanVertex*));
+    stack->top = -1;
+    stack->size = size;
+    return stack;
+}
+
+void push(t_stack* stack, t_tarjanVertex* v)
+{
+    if (stack->top < stack->size - 1) {
+        stack->top = stack->top+1;
+        stack->vertex[stack->top] = v;
     }
-    if (cls->connected == NULL || cls->nbelts == 0) {
-        printf("Class is empty\n");
-        return;
+}
+
+t_tarjanVertex* pop(t_stack* stack) {
+    if (stack->top >= 0) {
+        return stack->vertex[stack->top--];
+    }
+    return NULL;
+}
+
+int isEmptyStack(t_stack* stack) {
+    return stack->top == -1;
+}
+
+t_partition* createPartition()
+{
+    t_partition* p = malloc(sizeof(t_partition));
+    p->head = NULL;
+    p->size = 0;
+    return p;
+}
+
+void addClassToPartition(t_partition* p, t_class* c)
+{
+    t_partitionNode* newNode = malloc(sizeof(t_partitionNode));
+    newNode->class = c;
+    newNode->next = p->head;
+    p->head = newNode;
+    p->size++;
+}
+
+/* Tarjan DFS */
+void parcours(t_tarjanVertex* v, t_adjList* graph, t_tarjanVertex** vertices, t_stack* s, int* idx, t_partition* part)
+    {
+        v->nbr_classes = *idx;
+        v->accessible_number = *idx;
+        (*idx)++;
+        push(s, v);
+        v->state = 1;
+
+        t_list* successors = NULL;
+        if (graph != NULL && graph->array != NULL) successors = graph->array[v->identifier-1];
+
+        t_cell* cur = (successors != NULL) ? successors->head : NULL;
+
+        while (cur != NULL) {
+            t_tarjanVertex* w = vertices[cur->arrival_vertex-1];
+
+            if (w->nbr_classes == -1) {
+                parcours(w, graph, vertices, s, idx, part);
+                v->accessible_number = (v->accessible_number < w->accessible_number) ? v->accessible_number : w->accessible_number;
+            } else if (w->state) {
+                v->accessible_number = (v->accessible_number < w->nbr_classes) ? v->accessible_number : w->nbr_classes;
+            }
+            cur = cur->next;
+        }
+
+        if (v->accessible_number == v->nbr_classes) {
+            char cname[16];
+            sprintf(cname, "C%d", part->size + 1);
+            t_class* newClass = createClass(cname);
+            t_tarjanVertex* w;
+
+            do {
+                w = pop(s);
+                if (w == NULL) break;
+                w->state = 0;
+                addVertexToClass(newClass, w);
+            } while (w != v);
+
+            addClassToPartition(part, newClass);
+        }
     }
 
-    printf("Class connected: [");
-    for (int i = 0; i < cls->nbelts; i++) {
-        if (i > 0) printf(", ");
-        printf("%d", cls->connected[i]);
+void displayPartition(t_partition* p)
+{
+    if (p == NULL) {
+        printf("Partition is NULL\n");
+        return;
     }
-    printf("]\n");
+    t_partitionNode* pNode = p->head;
+    while (pNode != NULL)
+    {
+        t_class* c = pNode->class;
+        printf("Component %s: {", c->name);
+        t_classNode* cNode = c->head;
+        while (cNode != NULL)
+        {
+            printf("%d", cNode->vertex->identifier);
+            if (cNode->next != NULL) {
+                printf(",");
+            }
+            cNode = cNode->next;
+        }
+        printf("}\n");
+        pNode = pNode->next;
+    }
 }
