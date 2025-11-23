@@ -29,7 +29,7 @@ typedef struct t_list {
  * @return : pointer to the created empty list
  */
 
-typedef struct s_adjList {
+typedef struct t_adjList {
     t_list**array;
     int size;
 }t_adjList;

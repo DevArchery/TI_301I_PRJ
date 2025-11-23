@@ -7,5 +7,8 @@ add_executable(TI_301_PJT
         main.c
         utils.c
         data.c
+        matrix.c
+        matrix.h
+        hasse.c
 )
 

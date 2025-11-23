@@ -1,3 +1,3 @@
-C:/Users/Rudolf/CLionProjects/TI_301I_PRJ/cmake-build-debug/CMakeFiles/TI_301_PJT.dir
-C:/Users/Rudolf/CLionProjects/TI_301I_PRJ/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/Rudolf/CLionProjects/TI_301I_PRJ/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/rudol/Documents/GitHub/TI_301I_PRJ/cmake-build-debug/CMakeFiles/TI_301_PJT.dir
+C:/Users/rudol/Documents/GitHub/TI_301I_PRJ/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/rudol/Documents/GitHub/TI_301I_PRJ/cmake-build-debug/CMakeFiles/rebuild_cache.dir
