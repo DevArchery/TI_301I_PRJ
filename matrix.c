@@ -11,17 +11,17 @@ matrix createZeroMatrix (int n) {
     matrix NullMatrix;
     NullMatrix.rows = n;
     NullMatrix.columns = n;
-    NullMatrix.proba = malloc (n * sizeof (float));
+    NullMatrix.proba = malloc (n * sizeof (float*));
     for (int i = 0; i<n; i++) {
         NullMatrix.proba[i] = calloc (n, sizeof (float));
     }
     return NullMatrix;
 }
 
-matrix adjencyListToMatrix (t_adjList graph) {
-    matrix adjM = createZeroMatrix (graph.size);
-    for (int i=0; i<graph.size; i++) {
-        t_cell *cur = graph.array[i].head;
+matrix adjencyListToMatrix (t_adjList* graph) {
+    matrix adjM = createZeroMatrix (graph->size);
+    for (int i=0; i<graph->size; i++) {
+        t_cell* cur = graph->array[i]->head;
         while (cur != NULL) {
             adjM.proba[i][cur->arrival_vertex] = cur -> probability;
             cur = cur->next;
@@ -68,7 +68,7 @@ float matrixDiff(matrix A, matrix B) {
     float diff = 0;
     for (int i=0; i<A.rows; i++) {
         for (int j=0; j<A.columns; j++) {
-            diff += A.proba[i][j] - B.proba[i][j];
+            diff += fabs(A.proba[i][j] - B.proba[i][j]);
         }
     }
     return diff;
