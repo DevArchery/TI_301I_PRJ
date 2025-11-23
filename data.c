@@ -94,21 +94,29 @@ void displayPartition(t_partition *p_partition)
     while (pnode != NULL) {
         t_class *c = pnode->class;
         if (c == NULL || c->head == NULL) {
-            printf("{}\n");
+            /* If class has no name or vertices, still print its name if available */
+            if (c && c->name[0] != '\0') {
+                printf("%s {}\n", c->name);
+            } else {
+                printf("C {}\n");
+            }
             pnode = pnode->next;
             continue;
         }
 
-        printf("{");
+        /* Print class name then the set of vertex identifiers */
+        printf("%s {", c->name);
         t_classNode *cn = c->head;
+        int first = 1;
         while (cn != NULL) {
             if (cn->vertex != NULL) {
+                if (!first) printf(",");
                 printf("%d", cn->vertex->identifier);
+                first = 0;
             } else {
+                if (!first) printf(",");
                 printf("?");
-            }
-            if (cn->next != NULL) {
-                printf(",");
+                first = 0;
             }
             cn = cn->next;
         }
@@ -117,7 +125,6 @@ void displayPartition(t_partition *p_partition)
         pnode = pnode->next;
     }
 }
-
 
 t_partition* TarjanAlgorithm(t_adjList* adjList) {
     if (adjList == NULL) return NULL;
