@@ -1,10 +1,11 @@
 //
 // Created by rudol on 23/11/2025.
 //
-#include "utils.h"
+
 
 #ifndef INC_2526_TI301_PJT_MATRIX_H
 #define INC_2526_TI301_PJT_MATRIX_H
+#include "utils.h"
 
 typedef struct {
     int columns;
@@ -15,6 +16,7 @@ typedef struct {
  * @brief create a zero matrix of size n x n
  * @param columns : number of columns of the matrix
  * @param rows : number of rows of the matrix
+ * @param **proba : probability of the vertex
  * @return : the created matrix
  */
 
@@ -25,7 +27,7 @@ matrix createZeroMatrix (int n);
  * @return : the created matrix filled with zeros
  */
 
-matrix adjencyListToMatrix (t_adjList graph);
+matrix adjencyListToMatrix (t_adjList* graph);
 /***
  * @brief convert an adjacency list to a matrix
  * @param graph : the adjacency list to convert

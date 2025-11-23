@@ -1,5 +1,5 @@
 //
-// Created by rudol on 23/11/2025.
+// Created by rudolf on 23/11/2025.
 //
 
 #include "matrix.h"
@@ -68,7 +68,7 @@ float matrixDiff(matrix A, matrix B) {
     float diff = 0;
     for (int i=0; i<A.rows; i++) {
         for (int j=0; j<A.columns; j++) {
-            diff += fabs(A.proba[i][j] - B.proba[i][j]);
+            diff += fabsf(A.proba[i][j] - B.proba[i][j]);
         }
     }
     return diff;

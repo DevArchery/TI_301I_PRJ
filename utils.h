@@ -1,6 +1,5 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
-#include <string.h>
 // Function prototypes from utils.c
 char *getID(int);
 
@@ -13,7 +12,7 @@ typedef struct t_cell {
 /***
  * @brief create a cell
  * @param arrival_vertex : vertex where the cell arrives
- * @param prob : probability of the cell
+ * @param probability : probability of the cell
  * @return : pointer to the created cell
  */
 
