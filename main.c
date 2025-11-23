@@ -7,5 +7,5 @@ int main() {
     displayAdjList(graph);
     checkMarkovValidity(graph);
     mermaidOutput(graph);
-    return 0;
+    TarjanAlgorithm(graph);
 }

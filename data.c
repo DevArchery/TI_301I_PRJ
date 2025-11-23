@@ -82,3 +82,24 @@ t_adjList* readGraph(char *filename) {
     fclose(file);
     return adjList;
 }
+
+void TarjanAlgorithm(t_adjList* adjList) {
+    if (adjList == NULL) return;
+
+    int n = adjList->size;
+    t_tarjanVertex** vertices = tarjanStateArray(adjList);
+    t_stack* s = createStack(n);
+    t_partition* p = createPartition();
+    int idx = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (vertices[i]->nbr_classes == -1) {
+            parcours(vertices[i], adjList, vertices, s, &idx, p);
+        }
+    }
+
+    displayPartition(p);
+
+    // Free allocated memory
+    // ... (code to free vertices, stack, partition, etc.)
+}
